@@ -21,11 +21,12 @@ import React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { StyledEngineProvider } from '@mui/material/styles';
 import DataTable from './DataTable';
+import App from './App';
 
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <DataTable />
+      <App />
     </StyledEngineProvider>
   </React.StrictMode>
 );
