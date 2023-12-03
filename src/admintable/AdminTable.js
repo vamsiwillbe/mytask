@@ -23,6 +23,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Button } from '@mui/base';
 
+import EditRecord from './edit/EditRecord';
+
 function createData(id, name, calories, fat, carbs, protein) {
   return {
     id,
@@ -327,11 +329,43 @@ export default function EnhancedTable() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage,rows],
   );
+
+  const [openModal,setOpenModal]=useState(false);
+  const [editRow,setEditRow]=useState("");
+  useEffect(() => {
+    console.log("Updated rows in useEffect:", visibleRows);
+    
+    setRows(rows)
+  }, [rows]);
+  
+  const handleSave = (editedRow) => {
+    // Find the index of the edited row in rows
+    const rowIndex = rows.findIndex((row) => row.id === editedRow.id);
+  
+    // Update the state using the callback form of setRows
+    setRows((prevRows) => {
+      // Create a new array with the updated row
+      const updatedRows = [...prevRows];
+      updatedRows[rowIndex] = editedRow;
+  
+      // You can also close the modal or perform any other necessary actions
+      setOpenModal(false);
+  
+      // Return the updated array
+      return updatedRows;
+    });
+  };
+  
+  
+  
+  
+  
 
   return (
     <Box sx={{ width: '100%' }}>
+      <EditRecord openModal={openModal} row={editRow} onHandleSave={ handleSave} />
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
@@ -386,9 +420,17 @@ export default function EnhancedTable() {
                     <TableCell >{row.name}</TableCell>
                     <TableCell >{row.email}</TableCell>
                     <TableCell >{row.role}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={()=>{
+                        console.log("button")
+                        setOpenModal(prev => true);
+                        setEditRow(row);
+                        console.log(openModal)
 
-                      <Button>
+                       
+                      }}>
+
+                      <Button 
+                      >
                         Edit
                       </Button>
                     </TableCell>
