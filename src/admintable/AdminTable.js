@@ -219,8 +219,9 @@ export default function EnhancedTable() {
             variant="h6"
             id="tableTitle"
             component="div"
+            style={{ color: 'blue', fontWeight: 'bold', fontSize: '30px' }}
           >
-            Admin Dashboard
+            Dashboard
           </Typography>
         )}
   
