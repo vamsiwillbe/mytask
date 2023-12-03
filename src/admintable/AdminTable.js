@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Button } from '@mui/base';
+import { TextField } from '@mui/material';
 
 import EditRecord from './edit/EditRecord';
 
@@ -247,6 +248,7 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -280,9 +282,19 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const deleteRows=()=>{
-    console.log(selected,'sss')
-}
+  const deleteRows = () => {
+    // Create a new array of rows excluding the selected IDs
+    const updatedRows = rows.filter((row) => !selected.includes(row.id));
+  
+    // Update the state with the new array
+    setRows(updatedRows);
+    setGlobalRows(updatedRows)
+  
+    // Clear the selected array
+    setSelected([]);
+  
+    
+  };
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
@@ -356,18 +368,48 @@ export default function EnhancedTable() {
       // Return the updated array
       return updatedRows;
     });
+    setGlobalRows((prevRows) => {
+      // Create a new array with the updated row
+      const updatedRows = [...prevRows];
+      updatedRows[rowIndex] = editedRow;
+  
+      // You can also close the modal or perform any other necessary actions
+      
+  
+      // Return the updated array
+      return updatedRows;
+    });
+
   };
   
   
   
-  
+  const handleSearch=(text)=>{
+    const filteredRows = globalRows.filter(
+      (row) =>
+        row.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+        row.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+        row.role.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
+    // Update the state with the filtered rows
+    setRows(filteredRows);
+  }
   
 
   return (
     <Box sx={{ width: '100%' }}>
+      
       <EditRecord openModal={openModal} row={editRow} onHandleSave={ handleSave} />
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
+
+        <TextField
+        label="Search"
+        variant="outlined"
+        value={searchInput}
+        onChange={(e) =>{setSearchInput(e?.target?.value); handleSearch(e.target.value)}}
+      />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
